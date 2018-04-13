@@ -65,7 +65,7 @@ namespace MKQ2
                 try
                 {
                     
-                    inputPort[i] = Convert.ToInt32(Console.ReadLine());
+                    inputPort[i] = Convert.ToInt16(Console.ReadLine());
                 }
                 catch
                 {
@@ -82,7 +82,7 @@ namespace MKQ2
                 try
                 {
                     
-                    outputPort[i] = Convert.ToInt32(Console.ReadLine());
+                    outputPort[i] = Convert.ToInt16(Console.ReadLine());
                 }
                 catch
                 {
@@ -124,7 +124,7 @@ namespace MKQ2
             try
             {
                 
-                checkValue = Convert.ToInt32(Console.ReadLine());
+                checkValue = Convert.ToInt16(Console.ReadLine());
             }
             catch
             {
@@ -246,7 +246,7 @@ namespace MKQ2
                     try
                     {
                         
-                        Ports.portsData[Convert.ToInt32(inputGet)] = false;
+                        Ports.portsData[Convert.ToInt16(inputGet)] = false;
                     }
                     catch
                     {
