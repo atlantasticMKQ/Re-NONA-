@@ -60,15 +60,36 @@ namespace MKQ2
             outputPort = new int[outputNumber];
             for (int i = 0; i < inputNumber; i++)
             {
+                reset:
                 Console.WriteLine("输入[{0}]端口: ", i );
-                inputPort[i] = Convert.ToInt32(Console.ReadLine());
+                try
+                {
+                    
+                    inputPort[i] = Convert.ToInt32(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("请重新输入");
+                    goto reset;
+                }
                 Ports.usedPorts[Ports.usedPortsIndex] = inputPort[i];
                 Ports.usedPortsIndex++;
             }
             for (int i = 0; i < outputNumber; i++)
             {
+                reset1:
                 Console.WriteLine("输出[{0}]端口: ", i );
-                outputPort[i] = Convert.ToInt32(Console.ReadLine());
+                try
+                {
+                    
+                    outputPort[i] = Convert.ToInt32(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("请重新输入");
+                    goto reset1;
+                }
+                
                 Ports.usedPorts[Ports.usedPortsIndex] = outputPort[i];
                 Ports.usedPortsIndex++;
             }
@@ -98,7 +119,19 @@ namespace MKQ2
         static void Check()
         {
             Console.WriteLine("元件编号 ");
-            int checkValue = Convert.ToInt32(Console.ReadLine());
+            int checkValue;
+            reset2:
+            try
+            {
+                
+                checkValue = Convert.ToInt32(Console.ReadLine());
+            }
+            catch
+            {
+                Console.WriteLine("请重新输入");
+                goto reset2;
+            }
+            
             if (checkValue < Tools.toolsNumber)
             {
                 tools[checkValue].Check();
@@ -185,7 +218,20 @@ namespace MKQ2
                 Console.WriteLine("通电端口,完毕:stop ");
                 inputGet = Console.ReadLine();
                 if (inputGet != "stop")
-                    Ports.portsData[Convert.ToInt32(inputGet)] = true;
+                {
+                    reset3:
+                    try
+                    {
+                        
+                        Ports.portsData[Convert.ToInt32(inputGet)] = true;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("请重新输入");
+                        goto reset3;
+                    }
+                    
+                }
                 else
                     ifInputOver = true;
             }
@@ -195,7 +241,20 @@ namespace MKQ2
                 Console.WriteLine("断电端口,完毕:stop ");
                 inputGet = Console.ReadLine();
                 if (inputGet != "stop")
-                    Ports.portsData[Convert.ToInt32(inputGet)] = false;
+                {
+                    reset4:
+                    try
+                    {
+                        
+                        Ports.portsData[Convert.ToInt32(inputGet)] = false;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("请重新输入");
+                        goto reset4;
+                    }
+                    
+                }
                 else
                     ifInputOver = true;
             }
