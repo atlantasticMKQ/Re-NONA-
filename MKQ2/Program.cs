@@ -17,16 +17,18 @@ namespace MKQ2
     static class Ports
     {
         public static bool[] portsData = new bool[byte.MaxValue];
+        public static int[] usedPorts = new int[byte.MaxValue];
+        public static int usedPortsIndex = 0;
     }
     class Tools
     {
         public static int toolsNumber = 0;
-        Types type;
-        int inputNumber;
-        int outputNumber;
-        int[] inputPort;
-        int[] outputPort;
-        int toolnumber;
+        public Types type;
+        public int inputNumber;
+        public int outputNumber;
+        public int[] inputPort ;
+        public int[] outputPort;
+        public int toolnumber;
         public Tools(Types _type)
         {
             type = _type;
@@ -57,121 +59,189 @@ namespace MKQ2
             outputPort = new int[outputNumber];
             for (int i = 0; i < inputNumber; i++)
             {
-                Console.WriteLine("请输入{0}元件输入端{1}所接入端口的编号", type, i );
+                Console.WriteLine("输入[{0}]端口: ", i );
                 inputPort[i] = Convert.ToInt32(Console.ReadLine());
+                Ports.usedPorts[Ports.usedPortsIndex] = inputPort[i];
+                Ports.usedPortsIndex++;
             }
             for (int i = 0; i < outputNumber; i++)
             {
-                Console.WriteLine("请输入{0}元件输出端{1}所接入端口的编号", type, i );
+                Console.WriteLine("输出[{0}]端口: ", i );
                 outputPort[i] = Convert.ToInt32(Console.ReadLine());
+                Ports.usedPorts[Ports.usedPortsIndex] = outputPort[i];
+                Ports.usedPortsIndex++;
             }
+            Console.Write("编号:[{0}],类型:{1} ", toolnumber, type);
             toolnumber = toolsNumber;
             toolsNumber++;
         }
         public void Check()
         {
-            Console.WriteLine("这是被创建的第{0}个元件,元件类型为{1}",toolnumber,type);
+            Console.WriteLine("编号:[{0}],类型:[{1}] ",toolnumber,type);
             for (int i = 0; i < inputNumber; i++)
             {
-                Console.WriteLine("输入端{0}所接入的端口号为{1}", i ,inputPort[i]);
-                Console.WriteLine("该端口的状态为{0}",Ports.portsData[inputPort[i]]);
+                Console.Write("输入[{0}]端口{1} ", i ,inputPort[i]);
+                Console.Write("状态[{0}] ",Ports.portsData[inputPort[i]]);
             }
             for (int i = 0; i < outputNumber; i++)
             {
-                Console.WriteLine("输出端{0}所接入的端口号为{1}", i, outputPort[i]);
-                Console.WriteLine("该端口的状态为{0}", Ports.portsData[outputPort[i]]);
+                Console.Write("输出[{0}]端口{1} ", i, outputPort[i]);
+                Console.Write("状态[{0}] ", Ports.portsData[outputPort[i]]);
             }
         }
     }
     
     class Program
     {
-        static int InputControl()
+        static Tools[] tools = new Tools[byte.MaxValue];
+        static void Check()
         {
-            Restart:
-            Console.WriteLine("请输入指令,目前支持的指令有: new,check,");
+            Console.WriteLine("元件编号 ");
+            int checkValue = Convert.ToInt32(Console.ReadLine());
+            if (checkValue < Tools.toolsNumber)
+            {
+                tools[checkValue].Check();
+            }
+            else
+            {
+                Console.WriteLine("未创建 ");
+            }
+        }
+        static void InputControl()
+        {
+            Console.WriteLine();
+            Console.WriteLine("指令:new,check,run,ports ");
             switch (Console.ReadLine())
             {
                 case "new":
-                    Console.WriteLine("目前可供创建的类型:And,Or,Nand,Nor,Not");
-                    Console.WriteLine("请输入您想创建的类型");
+                    Console.WriteLine("类型:And,Or,Nand,Nor,Not ");
                     switch (Console.ReadLine())
                     {
                         case "And":
-                            return 10000;
+                            tools[Tools.toolsNumber] = new Tools(Types.And);
+                            break;
                         case "Or":
-                            return 10001;
+                            tools[Tools.toolsNumber] = new Tools(Types.Or);
+                            break;
                         case "Nand":
-                            return 10002;
+                            tools[Tools.toolsNumber] = new Tools(Types.Nand);
+                            break;
                         case "Nor":
-                            return 10003;
+                            tools[Tools.toolsNumber] = new Tools(Types.Nor);
+                            break;
                         case "Not":
-                            return 10004;
+                            tools[Tools.toolsNumber] = new Tools(Types.Not);
+                            break;
                         default:
-                            Console.WriteLine("您输入的命令尚未定义");
+                            Console.Write(":未定义 ");
                             break;
                     }
                     break;
                 case "check":
-                    return 10010;
+                    Check();
+                    break;
+                case "run":
+                    Run();
+                    break;
+                case "ports":
+                    //Array.Sort(Ports.usedPorts);
+                    for (int i = 0; i < Ports.usedPortsIndex; i++)
+                    {
+                        Console.Write("{0}:[{1}] ", Ports.usedPorts[i], Ports.portsData[Ports.usedPorts[i]]);
+                    }
+                    //foreach(int index in Ports.usedPorts)
+                    //{Console.Write("{0}:{1} ",index,Ports.portsData[index]);
+                    //    
+                    //}
+                    break;
                 default:
-                    Console.WriteLine("您输入的命令尚未定义");
+                    Console.Write(":未定义 ");
                     break;
 
             }
-            goto Restart;
         }
-        static void Maker()
+        static void Run()
         {
-            //bool ifMakerEnd = false;
-            //Console.WriteLine("下面您将创建元件");
-            //do
-            //{
-            //    Console.WriteLine("目前可供创建的类型:And,Or,Nand,Nor,Not");
-            //    Console.WriteLine("请输入您想创建的类型\"0,1,2,3,4\"");
-            //    Types type = (Types)Convert.ToInt32(Console.ReadLine());
-            //    Tools tools= new Tools(type);
-            //}
-            //while (ifMakerEnd);
+            bool ifInputOver = false;
+            string inputGet = null;
+            while (!ifInputOver)
+            {
+                Console.WriteLine("通电端口,完毕:stop ");
+                inputGet = Console.ReadLine();
+                if (inputGet != "stop")
+                    Ports.portsData[Convert.ToInt32(inputGet)] = true;
+                else
+                    ifInputOver = true;
+            }
+            ifInputOver = false;
+            while (!ifInputOver)
+            {
+                Console.WriteLine("断电端口,完毕:stop ");
+                inputGet = Console.ReadLine();
+                if (inputGet != "stop")
+                    Ports.portsData[Convert.ToInt32(inputGet)] = false;
+                else
+                    ifInputOver = true;
+            }
+            for (int i = 0; i < 100000; i++)
+            foreach(Tools to in tools)
+            {
+                if (to == null)
+                        break;
+                switch (to.type)
+                {
+                    case Types.And:
+                        Ports.portsData[to.outputPort[0]] = Ports.portsData[to.inputPort[0]] && Ports.portsData[to.inputPort[1]];
+                        break;
+                    case Types.Or:
+                        Ports.portsData[to.outputPort[0]] = Ports.portsData[to.inputPort[0]] || Ports.portsData[to.inputPort[1]];
+                        break;
+                    case Types.Nand:
+                        Ports.portsData[to.outputPort[0]] = !(Ports.portsData[to.inputPort[0]] && Ports.portsData[to.inputPort[1]]);
+                        break;
+                    case Types.Nor:
+                        Ports.portsData[to.outputPort[0]] = !(Ports.portsData[to.inputPort[0]] || Ports.portsData[to.inputPort[1]]);
+                        break;
+                    case Types.Not:
+                        Ports.portsData[to.outputPort[0]] = !Ports.portsData[to.inputPort[0]];
+                        break;
+                }
+            }
         }
         static void Main(string[] args)
         {
-            Tools[] tools = new Tools[256];
-
-            //Console.WriteLine("下面您将创建元件");
-            //Stop:
-            //Console.WriteLine("目前可供创建的类型:And,Or,Nand,Nor,Not");
-            //Console.WriteLine("请输入您想创建的类型\"0,1,2,3,4\"");
-            //Types type = (Types)Convert.ToInt32(Console.ReadLine());
-            //tools[Tools.toolsNumber] = new Tools(type);
-            //Console.WriteLine("是否要停止创建,输入\"stop\"停止");
-            //if (Console.ReadLine() != "stop")
-            //{
-            //    goto Stop;
-            //}
             Restart:
-            switch (InputControl())
-            {
-                case 10000:
-                    tools[Tools.toolsNumber] = new Tools(Types.And);
-                    break;
-                case 10001:
-                    tools[Tools.toolsNumber] = new Tools(Types.Or);
-                    break;
-                case 10002:
-                    tools[Tools.toolsNumber] = new Tools(Types.Nand);
-                    break;
-                case 10003:
-                    tools[Tools.toolsNumber] = new Tools(Types.Nor);
-                    break;
-                case 10004:
-                    tools[Tools.toolsNumber] = new Tools(Types.Not);
-                    break;
-                case 10010:
-                    Console.WriteLine("请输入所要查询元件的编号");
-                    tools[Convert.ToInt32(Console.ReadLine())].Check();
-                    break;
-            }
+            //switch (InputControl())
+            //{
+            //    case 10000:
+            //        tools[Tools.toolsNumber] = new Tools(Types.And);
+            //        break;
+            //    case 10001:
+            //        tools[Tools.toolsNumber] = new Tools(Types.Or);
+            //        break;
+            //    case 10002:
+            //        tools[Tools.toolsNumber] = new Tools(Types.Nand);
+            //        break;
+            //    case 10003:
+            //        tools[Tools.toolsNumber] = new Tools(Types.Nor);
+            //        break;
+            //    case 10004:
+            //        tools[Tools.toolsNumber] = new Tools(Types.Not);
+            //        break;
+            //    case 10010:
+            //        Console.WriteLine("请输入所要查询元件的编号");
+            //        int checkValue = Convert.ToInt32(Console.ReadLine());
+            //        if (checkValue <= Tools.toolsNumber)
+            //        {
+            //            tools[checkValue].Check();
+            //        }
+            //        else
+            //        {
+            //            Console.WriteLine("您所要查询的元件尚未被创建");
+            //        }
+            //        break;
+            //}
+            InputControl();
             goto Restart;
 
             
