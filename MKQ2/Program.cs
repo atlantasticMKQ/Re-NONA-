@@ -167,6 +167,9 @@ namespace MKQ2
                         "->ports:显示端口状态(待改进)\n" +
                         "[请注意大小写]");
                     break;
+                case "MKQ":
+                    Console.WriteLine("难道你想要个彩蛋?");
+                    break;
                 default:
                     Console.Write(":未定义 ");
                     break;
