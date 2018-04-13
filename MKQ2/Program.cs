@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace MKQ2
 {
+
     enum Types
     {
         And,
@@ -110,7 +111,7 @@ namespace MKQ2
         static void InputControl()
         {
             Console.WriteLine();
-            Console.WriteLine("指令:new,check,run,ports ");
+            Console.WriteLine("指令:new,check,run,ports,help ");
             switch (Console.ReadLine())
             {
                 case "new":
@@ -144,20 +145,31 @@ namespace MKQ2
                     Run();
                     break;
                 case "ports":
-                    //Array.Sort(Ports.usedPorts);
                     for (int i = 0; i < Ports.usedPortsIndex; i++)
                     {
                         Console.Write("{0}:[{1}] ", Ports.usedPorts[i], Ports.portsData[Ports.usedPorts[i]]);
                     }
-                    //foreach(int index in Ports.usedPorts)
-                    //{Console.Write("{0}:{1} ",index,Ports.portsData[index]);
-                    //    
-                    //}
+                    break;
+                case "help":
+                    Console.WriteLine("本游戏由端口替代导线,允许玩家在端口之间创建逻辑门\n" +
+                        "目前支持的逻辑门有\n" +
+                        "->And:仅当两个输入端同时有电时才输出电流\n" +
+                        "->Or:只要有一个输入端有电便输出电流\n" +
+                        "->Nand:仅当两个输入端口都有电时才不输出电流\nNor:仅当两个输入端口都没电时才输出电流\n" +
+                        "->Not:输入端口与输出端口状态相反\n\n" +
+                        "目前的版本不支持会造成矛盾的电路所带来的快速变化电流(端口除非改变,通电状态应该是一定的)\n" +
+                        "如果输入错误会导致程序崩溃而非重新输入\n" +
+                        "true:有电false:没电\n" +
+                        "支持的指令如下\n" +
+                        "->new:创建新元件\n" +
+                        "->check:检查元件状态\n" +
+                        "->run:运行元件\n" +
+                        "->ports:显示端口状态(待改进)\n" +
+                        "[请注意大小写]");
                     break;
                 default:
                     Console.Write(":未定义 ");
                     break;
-
             }
         }
         static void Run()
@@ -210,43 +222,10 @@ namespace MKQ2
         }
         static void Main(string[] args)
         {
+            Console.WriteLine("#如果是第一次玩,请输入[help]再摁回车");
             Restart:
-            //switch (InputControl())
-            //{
-            //    case 10000:
-            //        tools[Tools.toolsNumber] = new Tools(Types.And);
-            //        break;
-            //    case 10001:
-            //        tools[Tools.toolsNumber] = new Tools(Types.Or);
-            //        break;
-            //    case 10002:
-            //        tools[Tools.toolsNumber] = new Tools(Types.Nand);
-            //        break;
-            //    case 10003:
-            //        tools[Tools.toolsNumber] = new Tools(Types.Nor);
-            //        break;
-            //    case 10004:
-            //        tools[Tools.toolsNumber] = new Tools(Types.Not);
-            //        break;
-            //    case 10010:
-            //        Console.WriteLine("请输入所要查询元件的编号");
-            //        int checkValue = Convert.ToInt32(Console.ReadLine());
-            //        if (checkValue <= Tools.toolsNumber)
-            //        {
-            //            tools[checkValue].Check();
-            //        }
-            //        else
-            //        {
-            //            Console.WriteLine("您所要查询的元件尚未被创建");
-            //        }
-            //        break;
-            //}
             InputControl();
             goto Restart;
-
-            
-
-            
         }
     }
 }
