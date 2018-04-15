@@ -18,8 +18,6 @@ namespace MKQ2
     static class Ports
     {
         public static bool[] portsData = new bool[byte.MaxValue];
-        public static int[] usedPorts = new int[byte.MaxValue];
-        public static int usedPortsIndex = 0;
     }
     class Tools
     {
@@ -72,8 +70,6 @@ namespace MKQ2
                     Console.WriteLine("请重新输入");
                     goto reset;
                 }
-                Ports.usedPorts[Ports.usedPortsIndex] = inputPort[i];
-                Ports.usedPortsIndex++;
             }
             for (int i = 0; i < outputNumber; i++)
             {
@@ -89,9 +85,6 @@ namespace MKQ2
                     Console.WriteLine("请重新输入");
                     goto reset1;
                 }
-                
-                Ports.usedPorts[Ports.usedPortsIndex] = outputPort[i];
-                Ports.usedPortsIndex++;
             }
             Console.Write("编号:[{0}],类型:{1} ", toolnumber, type);
             toolnumber = toolsNumber;
@@ -118,27 +111,32 @@ namespace MKQ2
         static Tools[] tools = new Tools[byte.MaxValue];
         static void Check()
         {
-            Console.WriteLine("元件编号 ");
-            int checkValue;
-            reset2:
+            int minIndex = 0;
+            int maxIndex = 0;
+            Console.WriteLine("查询范围(A~B)");
+            Console.Write("A=");
+        reset1:
             try
             {
-                
-                checkValue = Convert.ToInt16(Console.ReadLine());
+                minIndex = Convert.ToInt16(Console.ReadLine());
             }
             catch
             {
-                Console.WriteLine("请重新输入");
+                goto reset1;
+            }
+            Console.Write("B=");
+        reset2:
+            try
+            {
+                maxIndex = Convert.ToInt16(Console.ReadLine());
+            }
+            catch
+            {
                 goto reset2;
             }
-            
-            if (checkValue < Tools.toolsNumber)
+            for (int i = minIndex; i <= maxIndex; i++)
             {
-                tools[checkValue].Check();
-            }
-            else
-            {
-                Console.WriteLine("未创建 ");
+                tools[i].Check();
             }
         }
         static void InputControl()
@@ -178,10 +176,7 @@ namespace MKQ2
                     Run();
                     break;
                 case "ports":
-                    for (int i = 0; i < Ports.usedPortsIndex; i++)
-                    {
-                        Console.Write("{0}:[{1}] ", Ports.usedPorts[i], Ports.portsData[Ports.usedPorts[i]]);
-                    }
+                    GetPorts();
                     break;
                 case "help":
                     Console.WriteLine("本游戏由端口替代导线,允许玩家在端口之间创建逻辑门\n" +
@@ -281,6 +276,36 @@ namespace MKQ2
                         Ports.portsData[to.outputPort[0]] = !Ports.portsData[to.inputPort[0]];
                         break;
                 }
+            }
+        }
+        static void GetPorts()
+        {
+            int minIndex = 0;
+            int maxIndex = 0;
+            Console.WriteLine("查询范围(A~B)");
+            Console.Write("A=");
+            reset1:
+            try
+            {
+                minIndex = Convert.ToInt16(Console.ReadLine());
+            }
+            catch
+            {
+                goto reset1;
+            }
+            Console.Write("B=");
+            reset2:
+            try
+            {
+                maxIndex = Convert.ToInt16(Console.ReadLine());
+            }
+            catch
+            {
+                goto reset2;
+            }
+            for (int i = minIndex; i <= maxIndex; i++)
+            {
+                Console.WriteLine("端口{0} 状态{1}",i,Ports.portsData[i]);
             }
         }
         static void Main(string[] args)
